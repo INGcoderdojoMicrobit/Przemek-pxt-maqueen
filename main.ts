@@ -139,6 +139,7 @@ maqueen.IR_callbackUser(function (message) {
         maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, speed)
         maqueen.writeLED(maqueen.LED.LEDLeft, maqueen.LEDswitch.turnOn)
         maqueen.writeLED(maqueen.LED.LEDRight, maqueen.LEDswitch.turnOn)
+        doprzodu = 1
     }
     if (message == 13) {
         OLED12864_I2C.clear()
@@ -286,9 +287,11 @@ maqueen.IR_callbackUser(function (message) {
 })
 let dist = 0
 let playON = 0
+let doprzodu = 0
 let powerON = 0
 let strip: neopixel.Strip = null
 let speed = 0
+let diff = 10
 OLED12864_I2C.init(60)
 speed = 250
 OLED12864_I2C.showString(
@@ -297,16 +300,31 @@ OLED12864_I2C.showString(
 "Maqueen!",
 1
 )
+basic.pause(100)
 OLED12864_I2C.showString(
 1,
 1,
-"Waiting for",
+"czesc !",
+1
+)
+basic.pause(100)
+OLED12864_I2C.showString(
+1,
+2,
+"Przemek",
+1
+)
+basic.pause(2000)
+OLED12864_I2C.showString(
+1,
+1,
+"czekam na",
 1
 )
 OLED12864_I2C.showString(
 1,
 2,
-"IR command",
+"rozkazy",
 1
 )
 // Create a NeoPixel driver - specify the pin, number of LEDs, and the type of
@@ -376,4 +394,16 @@ basic.forever(function () {
         strip.show()
     }
     basic.pause(100)
+    if (doprzodu == 1) {
+        speed = speed + diff
+        if (speed > 255) {
+            diff = -10
+        }
+        if (speed < 0) {
+            doprzodu = 0
+            maqueen.motorStop(maqueen.Motors.All)
+        }
+        maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, speed)
+        maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, speed)
+    }
 })
